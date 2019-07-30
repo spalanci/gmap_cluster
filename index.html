@@ -1,0 +1,100 @@
+<style> 
+#map {
+  position: relative;
+  width: 700px;
+  height: 400px;
+  float: left;
+}
+
+</style>            
+    <script>
+
+			
+      function initMap() {
+		  
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 13,
+          center: {lat: 37.77743716057260, lng: 29.01345714845100}
+        });
+
+ 
+ 
+ var markers = [[37.743938,29.098269,0,'<b>ID:</b> 98<br/><b>Kodu:</b> 201981<br/><b>Koordinat:</b> 37.743938,29.098269<br/>'],[37.78642283406400,29.00644016262940,0,'<b>ID:</b> 325<br/><b>Kodu:</b> 104251<br/><b>Koordinat:</b> 37.78642283406400,29.00644016262940<br/>'],[37.77351008012590,29.03547345324240,0,'<b>ID:</b> 437<br/><b>Kodu:</b> 105412<br/><b>Koordinat:</b> 37.77351008012590,29.03547345324240<br/>'],[37.77137818357100,29.03548672451730,0,'<b>ID:</b> 438<br/><b>Kodu:</b> 105402<br/><b>Koordinat:</b> 37.77137818357100,29.03548672451730<br/>'],[37.76773253739000,29.03559317605960,0,'<b>ID:</b> 439<br/><b>Kodu:</b> 105391<br/><b>Koordinat:</b> 37.76773253739000,29.03559317605960<br/>'],[37.77706407500780,29.03547087215980,0,'<b>ID:</b> 446<br/><b>Kodu:</b> 105461<br/><b>Koordinat:</b> 37.77706407500780,29.03547087215980<br/>'],[37.77849928063070,29.03349805115060,0,'<b>ID:</b> 447<br/><b>Kodu:</b> 105482<br/>Koordinat:</b> 37.77849928063070,29.03349805115060<br/>'],[37.77824106853989,29.02511179447174,0,'<b>ID:</b> 451<br/><b>Kodu:</b> 105522<br/><b>Koordinat:</b> 37.77824106853989,29.02511179447174<br/>'],[37.79648600035430,29.01490265478440,10,'<b>ID:</b> 1314<br/><b>Kodu:</b> 108152<br/><b>Koordinat:</b> 37.79648600035430,29.01490265478440'],[37.79703791864670,29.01756093079620,2,'<b>ID:</b> 1315<br/><b>Kodu:</b> 114151<br/><b>Koordinat:</b> 37.79703791864670,29.01756093079620<br/>'],[37.78468319531500,29.00519148259900,0,'<b>ID:</b> 1353<br/><b>Kodu:</b> 114531<br/><b>Koordinat:</b> 37.78468319531500,29.00519148259900<br/>'],[37.77883352352130,29.01104421583300,0,'<b>ID:</b> 1355<br/><b>Kodu:</b> 108262<br/><b>Koordinat:</b> 37.77883352352130,29.01104421583300<br/>'],[37.77743716057260,29.01345714845100,0,'<b>ID:</b> 1356<br/><b>Kodu:</b> 108252<br/><b>Koordinat:</b> 37.77743716057260,29.01345714845100<br/>'],];
+        for (var i = 0; i < markers.length;++i) {
+         markers[i] = new google.maps.Marker({
+			  position:new google.maps.LatLng(markers[i][0],markers[i][1]),
+			  weight:markers[i][2],
+			  id:markers[i][2],
+			  title:'Adet:'+markers[i][2],
+			  description:"<b>Toplam Adet:</b>"+markers[i][2]+"<br/>"+markers[i][3]});
+			  
+		  attachInfoWindow(map, markers[i], markers[i].description);
+		  
+        }
+		
+			
+        var calc=function(markers, numStyles) {
+          var weight=0;
+          var id="";
+          
+          for(var i=0;i<markers.length;++i){
+            weight+=markers[i].weight;
+			
+          }
+           return {
+            text: weight,
+            index: Math.min(String(weight).length, numStyles)
+          };
+		  
+	}
+		var infowindow = new google.maps.InfoWindow;
+        var markerCluster = new MarkerClusterer(map, markers,
+            {zoomOnClick: false,imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+      
+	      markerCluster.setCalculator(calc);
+          markerCluster.addMarkers(markers);
+		
+  	  	google.maps.event.addListener(markerCluster, 'clusterclick', function(cluster) {
+		  var content = '';
+		  var info = new google.maps.MVCObject;
+		  info.set('position', cluster.center_);
+
+		  var allmarke = cluster.getMarkers();
+
+		  var hat = "";
+		  var titles = "";
+		  var titles2 = "";
+		  for (var i = 0; i < allmarke.length; i++) {
+			titles += allmarke[i].id;
+		  }
+		  for (var i = 0; i < allmarke.length; i++) {
+			titles2 += allmarke[i].description+'<hr/>';
+		  }
+		  
+		  //console.log(titles+" "+cluster.center_);
+		  infowindow.close();
+		  infowindow.setContent("<b>IDler:</b>"+titles+"<br/>"+titles2+" <br/>"++cluster.center_);
+		  infowindow.open(map, info);
+
+		});
+
+				
+      }
+	  
+	  
+	function attachInfoWindow(map, circle, info) {
+			var infowindow = new google.maps.InfoWindow({
+				content: info
+			});
+			google.maps.event.addListener(circle, 'click', function (ev) {
+				infowindow.setPosition(circle.position);
+				infowindow.open(map);
+	});
+	
+	}   
+
+    </script>
+    <script src="markerclusterer.js"></script>	
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY"></script>
+	
+  	<div id="map"></div>
